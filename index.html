@@ -20,9 +20,14 @@ document.body.classList.toggle('board-mode',view==='board');
 for(const id of ['home','board','phone'])$(id).hidden=id!==view;
 let artReady=Promise.resolve();
 if(view==='board'){
- $('sint').innerHTML='<img class="painted-frame idle-frame" src="/art/sint-bureau-wachten-v3.jpg" alt="Sinterklaas zit achter zijn bureau. De hoorn ligt op de telefoon." fetchpriority="high"><img class="painted-frame answered-frame" src="/art/sint-bureau-bellen-v3.jpg" alt="Sinterklaas houdt de gouden telefoonhoorn aan zijn oor." aria-hidden="true">';
- artReady=Promise.all(Array.from($('sint').querySelectorAll('img')).map(img=>img.decode()));
+ const frame=(pose,cls)=>'<div class="painted-frame '+cls+'"><img class="layer base-layer" src="/art/sint-rust-'+pose+'.jpg" alt="Sinterklaas '+(pose==='bellen'?'houdt de hoorn aan zijn oor':'zit achter zijn bureau')+'"><img class="layer eye-layer" src="/art/sint-bureau-'+pose+'-v3.jpg" alt=""><img class="layer mouth-layer" src="/art/sint-bureau-'+pose+'-v3.jpg" alt=""></div>';
+ $('sint').innerHTML=frame('wachten','idle-frame')+frame('bellen','answered-frame');
+ $('sint').querySelector('.answered-frame').setAttribute('aria-hidden','true');
+ $('telephone').innerHTML='<img src="/art/telefoon-los.png" alt="" class="phone-sprite">';
+ const steam=document.createElement('div');steam.className='tea-steam';steam.setAttribute('aria-hidden','true');steam.innerHTML='<i></i><i></i><i></i>';$('sint').append(steam);
+ artReady=Promise.all([...$('sint').querySelectorAll('img'),...$('telephone').querySelectorAll('img')].map(img=>img.decode()));
  artReady.catch(()=>status('boardStatus','De illustraties konden niet laden. Vernieuw de pagina.',true));
+ const blink=()=>{if(!document.hidden){$('sint').classList.add('blinking');setTimeout(()=>$('sint').classList.remove('blinking'),160);}setTimeout(blink,4200+Math.random()*4200);};setTimeout(blink,4500);
 }
 $('introArt').append($('drawing').content.cloneNode(true));
 $('openBoard').onclick=()=>location.search='?scherm=digibord';$('openPhone').onclick=()=>location.search='?scherm=telefoon';
@@ -31,15 +36,28 @@ let phoneStage='',room=null,active=false,audioContext=null,lastStage='',lastEven
 const words=['nul','één','twee','drie','vier','vijf','zes','zeven','acht','negen','tien','elf','twaalf'];
 const status=(id,msg,error=false)=>{$(id).textContent=msg;$(id).classList.toggle('error',error);};
 async function api(path,method='GET'){const response=await fetch('/api/room'+path,{method,cache:'no-store',signal:AbortSignal.timeout(10000)});let data;try{data=await response.json();}catch{throw Error('Verbinding onderbroken. Vernieuw de pagina en log zo nodig opnieuw in.');}if(!response.ok)throw Error(data.error||'Verbinden lukt niet.');return data;}
-function speak(text){if(!('speechSynthesis'in window)){status('boardStatus','Je browser heeft geen voorleesstem. Het getal staat wel in het wolkje.',true);return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='nl-NL';u.rate=.82;u.pitch=.8;const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith('nl'));if(voice)u.voice=voice;u.onstart=()=>$('sint').classList.add('speaking');u.onend=u.onerror=()=>$('sint').classList.remove('speaking');speechSynthesis.speak(u);}
+let speechSerial=0,speechWatch=null,hungUpEvent=null;
+function stopSpeech(){speechSerial++;clearInterval(speechWatch);speechWatch=null;window.speechSynthesis?.cancel();$('sint').classList.remove('speaking');}
+function setReceiver(holding){$('sint').classList.toggle('holding-receiver',holding);$('telephone').classList.toggle('off-hook',holding);$('sint').querySelector('.idle-frame')?.setAttribute('aria-hidden',String(holding));$('sint').querySelector('.answered-frame')?.setAttribute('aria-hidden',String(!holding));}
+function finishAnswer(event){if(room?.event!==event||room.phase!=='answer')return;hungUpEvent=event;setReceiver(false);}
+function speak(text,onDone=()=>{}){
+ stopSpeech();const serial=speechSerial;
+ if(!('speechSynthesis'in window)){status('boardStatus','Je browser heeft geen voorleesstem. Het getal staat wel in het wolkje.',true);onDone();return;}
+ const u=new SpeechSynthesisUtterance(text);u.lang='nl-NL';u.rate=.82;u.pitch=.8;
+ const voice=speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith('nl'));if(voice)u.voice=voice;
+ let started=false,done=false;const queuedAt=Date.now();
+ const finish=()=>{if(done||serial!==speechSerial)return;done=true;clearInterval(speechWatch);speechWatch=null;$('sint').classList.remove('speaking');onDone();};
+ u.onstart=()=>{if(serial!==speechSerial)return;started=true;$('sint').classList.add('speaking');};
+ u.onend=u.onerror=finish;u.onpause=()=>{if(serial===speechSerial)$('sint').classList.remove('speaking');};u.onresume=()=>{if(serial===speechSerial)$('sint').classList.add('speaking');};
+ speechWatch=setInterval(()=>{if(serial!==speechSerial)return;$('sint').classList.toggle('speaking',started&&speechSynthesis.speaking&&!speechSynthesis.paused);if(started&&!speechSynthesis.speaking&&!speechSynthesis.pending)finish();if(!started&&Date.now()-queuedAt>12000){speechSynthesis.cancel();status('boardStatus','De stem kon niet starten. Controleer het geluid en probeer Nog eens horen.',true);finish();}},100);
+ try{speechSynthesis.speak(u);}catch{finish();}
+}
 function ring(){if(!audioContext)return;for(let i=0;i<6;i++){const t=audioContext.currentTime+i*.45;for(const freq of [660,880]){const osc=audioContext.createOscillator(),g=audioContext.createGain();osc.frequency.value=freq;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.065,t+.015);g.gain.setValueAtTime(.065,t+.2);g.gain.linearRampToValueAtTime(0,t+.24);osc.connect(g).connect(audioContext.destination);osc.start(t);osc.stop(t+.25);}}}
 function boardRender(){if(!room||!active)return;const age=Date.now()-room.at;let stage=room.phase==='called'?(age<3000?'ringing':age<3650?'picking-up':'listening'):room.phase==='answer'?(age<2200?'thinking':'answer'):'ready';const key=room.event+stage;if(key===lastStage)return;lastStage=key;
-const holding=['picking-up','listening','thinking','answer'].includes(stage);
-$('sint').classList.toggle('holding-receiver',holding);
-$('sint').querySelector('.idle-frame')?.setAttribute('aria-hidden',String(holding));
-$('sint').querySelector('.answered-frame')?.setAttribute('aria-hidden',String(!holding));
+const holding=['picking-up','listening','thinking','answer'].includes(stage)&&hungUpEvent!==room.event;
+setReceiver(holding);
 $('telephone').classList.toggle('ringing',stage==='ringing');$('bubble').classList.toggle('thinking',stage==='thinking');$('bubble').classList.toggle('words',stage!=='answer');$('repeat').disabled=stage!=='answer';$('reset').disabled=stage==='ready';
- const states={ready:['Wie zou er bellen?','Wie belt er naar Sinterklaas?','Zet je pakjes maar klaar!'],ringing:['Tring, tring!','Tring, tring… wie zou dat zijn?','Ssst… er belt iemand.'],'picking-up':['Even opnemen…','Sinterklaas pakt de hoorn.','Hallo, wie belt daar?'],listening:['Hallo! Ik luister.','Sinterklaas luistert naar jou!','Zeg op je mobiel: ‘Hoeveel pakjes?’'],thinking:['Hmm…','Sinterklaas denkt even na…','Hoeveel pakjes zouden het zijn?'],answer:[String(room.number),'Hoeveel pakjes leggen jullie klaar?','Ieder blokje is één pakje. Tel maar rustig.']};const s=states[stage];$('bubble').textContent=s[0];$('heading').textContent=s[1];$('caption').textContent=s[2];if(stage==='ringing'){window.speechSynthesis?.cancel();ring();}if(stage==='listening'&&age<12000)speak('Hallo, met Sinterklaas.');if(stage==='answer')speak(words[room.number]+'. Leg '+words[room.number]+' blokjes neer.');}
+ const states={ready:['Wie zou er bellen?','Wie belt er naar Sinterklaas?','Zet je pakjes maar klaar!'],ringing:['Tring, tring!','Tring, tring… wie zou dat zijn?','Ssst… er belt iemand.'],'picking-up':['Even opnemen…','Sinterklaas pakt de hoorn.','Hallo, wie belt daar?'],listening:['Hallo! Ik luister.','Sinterklaas luistert naar jou!','Zeg op je mobiel: ‘Hoeveel pakjes?’'],thinking:['Hmm…','Sinterklaas denkt even na…','Hoeveel pakjes zouden het zijn?'],answer:[String(room.number),'Hoeveel pakjes leggen jullie klaar?','']};const s=states[stage];$('bubble').textContent=s[0];$('heading').textContent=s[1];$('caption').textContent=s[2];if(stage==='ready')stopSpeech();if(stage==='ringing'){stopSpeech();ring();}if(stage==='listening'&&age<12000)speak('Hallo, met Sinterklaas.');if(stage==='answer'){const event=room.event;speak(words[room.number]+'. Leg '+words[room.number]+' blokjes neer.',()=>finishAnswer(event));}}
 async function poll(){if(!active||!room||polling)return;polling=true;try{room=await api('/'+room.code);if(view==='board'){status('boardStatus','Verbonden · klaar voor de telefoon van de leerkracht');boardRender();}else phoneRender();}catch(e){status(view==='board'?'boardStatus':'phoneStatus',e.message,true);}finally{polling=false;}}
 function startPolling(){if(!timer)timer=setInterval(poll,1000);}
 $('startBoard').onclick=async()=>{const b=$('startBoard');b.disabled=true;try{await artReady;const AC=window.AudioContext||window.webkitAudioContext;if(AC){audioContext??=new AC();await audioContext.resume();}speak('Welkom, kinderen!');room=await api('','POST');active=true;$('roomCode').textContent=room.code.slice(0,3)+' '+room.code.slice(3);b.hidden=true;status('boardStatus','Verbonden · toets dit belnummer in op je mobiel');boardRender();startPolling();setInterval(boardRender,200);}catch(e){status('boardStatus',e.message,true);b.disabled=false;}};
@@ -59,5 +77,5 @@ $('ask').onclick=ask;
 $('call').onclick=async()=>{const code=$('dial').value;if(!/^\d{6}$/.test(code)){status('phoneStatus','Vul de zes cijfers van het digibord in.',true);return;}busy=true;$('call').disabled=true;stopListening();try{room=await api('/'+code+'/call','POST');active=true;startPolling();phoneRender();startListening();}catch(e){status('phoneStatus',e.message,true);}finally{busy=false;$('call').disabled=room?.phase==='called';}};
 if(view==='phone')setInterval(()=>{if(room&&active)phoneRender();},500);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll();});
-window.addEventListener('pagehide',stopListening);
+window.addEventListener('pagehide',()=>{stopListening();stopSpeech();});
 </script></body></html>

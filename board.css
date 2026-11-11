@@ -29,3 +29,23 @@ body.board-mode{--ink:#65483d;--muted:#917564;--red:#bd5549;background:#fff6e6;f
 .board-mode .scene-caption{z-index:4;background:#fff6e5f5;bottom:2.3%;box-shadow:0 3px 8px #834c2a44}
 @keyframes bell-lines{to{opacity:.35;translate:3px 0}}
 @media(prefers-reduced-motion:reduce){.answered-frame{transition:none}.board-mode .telephone.ringing:before,.board-mode .telephone.ringing:after{animation:none}}
+
+/* Aligned facial layers: the painted base has closed eyes and mouth. */
+.layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.eye-layer{mask-image:radial-gradient(ellipse 1.45% 2.4% at 32.05% 32.6%,black 72%,transparent 100%),radial-gradient(ellipse 1.35% 2.3% at 35.7% 31.7%,black 72%,transparent 100%)}
+.blinking .eye-layer{visibility:hidden}
+.mouth-layer{mask-image:radial-gradient(ellipse 2.05% 2.75% at 34.85% 39.15%,black 72%,transparent 100%);visibility:hidden}
+.speaking .mouth-layer{animation:talk-painted .34s steps(1,end) infinite}
+@keyframes talk-painted{0%,52%{visibility:visible}53%,100%{visibility:hidden}}
+.board-mode .telephone{left:1.8%;top:54%;width:17.2%;height:27.5%;transition:opacity .5s;transform:none}
+.board-mode .telephone .phone-sprite{display:block;width:100%;height:100%;object-fit:fill;filter:drop-shadow(0 3px 2px #713b2433)}
+.board-mode .telephone.off-hook{opacity:0}
+.board-mode .telephone.ringing{animation:phone-bounce .22s ease-in-out infinite alternate}
+.board-mode .telephone.ringing:before,.board-mode .telephone.ringing:after{content:none;display:none}
+@keyframes phone-bounce{from{transform:translateY(0)}to{transform:translateY(-.55cqw)}}
+.tea-steam{position:absolute;left:59.5%;top:54.5%;width:5.5%;height:11%;z-index:4;pointer-events:none;overflow:visible}
+.tea-steam i{position:absolute;bottom:0;left:30%;width:28%;height:70%;border-left:3px solid #fff8e9;border-radius:50%;filter:blur(2px);opacity:0;transform-origin:bottom;animation:tea-rise 3.6s ease-out infinite}
+.tea-steam i:nth-child(2){left:51%;animation-delay:-1.2s;height:60%}.tea-steam i:nth-child(3){left:16%;animation-delay:-2.4s;height:80%}
+@keyframes tea-rise{0%{opacity:0;transform:translateY(15%) scale(.7)}20%{opacity:.58}60%{opacity:.36;transform:translate(-12%,-25%) rotate(9deg) scale(1.1)}100%{opacity:0;transform:translate(16%,-65%) rotate(-12deg) scale(1.4)}}
+.board-mode .scene-caption:empty{display:none}
+@media(prefers-reduced-motion:reduce){.board-mode .telephone.ringing,.tea-steam i{animation:none}.tea-steam i{opacity:.25}.speaking .mouth-layer{animation:none;visibility:visible}}
