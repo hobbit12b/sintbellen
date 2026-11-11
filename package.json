@@ -1,0 +1,1 @@
+{"name":"sintbellen","private":true,"type":"module","scripts":{"build":"node build.mjs","test":"node --test test.mjs","dev":"node dev.mjs"}}
