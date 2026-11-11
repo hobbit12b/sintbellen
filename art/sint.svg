@@ -1,0 +1,30 @@
+<svg viewBox="0 0 500 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lachende, getekende Sinterklaas met een grote witte baard en rode mijter">
+<defs><linearGradient id="coat" x2="1" y2="1"><stop stop-color="#d96955"/><stop offset="1" stop-color="#b94340"/></linearGradient><linearGradient id="beard" x2="0" y2="1"><stop stop-color="#fffdf0"/><stop offset="1" stop-color="#f2dec0"/></linearGradient></defs>
+<ellipse cx="240" cy="635" rx="155" ry="19" fill="#814d3f" opacity=".15"/>
+<path d="M126 607Q88 635 139 643H210L210 603M278 602L281 643H356Q395 638 352 606" fill="#744c42"/>
+<path d="M174 354Q101 369 97 464L90 608Q245 647 389 607L377 458Q373 372 305 354Z" fill="url(#coat)" stroke="#a74c42" stroke-width="5" stroke-linejoin="round"/>
+<path d="M191 371Q244 399 294 372L320 615Q244 631 163 614Z" fill="#fff2d7"/>
+<path d="M179 371L139 612M307 372L344 614" stroke="#f5cb7a" stroke-width="14" fill="none" stroke-linecap="round"/>
+<path d="M242 429V620" stroke="#e3b165" stroke-width="7"/>
+<path d="M426 609V191C426 134 484 139 483 177C482 209 452 207 452 187" fill="none" stroke="#bb853f" stroke-width="17" stroke-linecap="round"/><path d="M423 606V190C423 143 477 144 477 178C477 199 456 202 455 187" fill="none" stroke="#f5ce7e" stroke-width="9" stroke-linecap="round"/>
+<path d="M335 414Q364 458 414 425" fill="none" stroke="#ac463e" stroke-width="57" stroke-linecap="round"/><path d="M337 410Q365 448 408 420" fill="none" stroke="#ce5c4e" stroke-width="44" stroke-linecap="round"/><path d="M400 405L410 440" stroke="#f6cd84" stroke-width="13"/><ellipse cx="422" cy="417" rx="18" ry="25" fill="#f2b087" transform="rotate(-13 422 417)"/><path d="M420 407L433 408M420 418L434 419" stroke="#d58c6a" stroke-width="3" stroke-linecap="round"/>
+<!-- A small raised hand welcomes the children. -->
+<g class="sint-wave"><path d="M149 408Q94 430 73 362" fill="none" stroke="#ac463e" stroke-width="57" stroke-linecap="round"/><path d="M146 405Q97 421 78 360" fill="none" stroke="#d56a55" stroke-width="44" stroke-linecap="round"/><path d="M56 365L91 350" stroke="#f6cd84" stroke-width="14" stroke-linecap="round"/><path d="M64 351Q43 338 37 316Q32 301 41 298Q50 297 57 314L49 282Q46 267 55 266Q63 265 66 282L72 305L70 270Q70 255 80 259Q87 260 87 277L88 306Q104 286 111 295Q117 301 104 321L90 347Q82 360 64 351" fill="#f4bc94" stroke="#d89573" stroke-width="3" stroke-linejoin="round"/></g>
+<!-- Big soft hair, round cheeks and smiling eyes. -->
+<path d="M156 199Q124 217 127 253Q103 279 132 308Q123 346 156 358Q153 404 197 426Q209 452 245 466Q283 451 295 428Q340 404 338 366Q369 345 355 314Q383 280 357 253Q358 214 324 199Z" fill="url(#beard)" stroke="#e6cfac" stroke-width="4"/>
+<ellipse cx="242" cy="255" rx="93" ry="92" fill="#f7c79f"/>
+<ellipse cx="151" cy="266" rx="17" ry="25" fill="#efb18a"/><ellipse cx="334" cy="266" rx="17" ry="25" fill="#efb18a"/>
+<path d="M157 217Q134 247 153 301Q176 292 175 251M326 215Q350 246 331 300Q309 287 312 251" fill="#fff8e6"/>
+<path d="M177 226Q193 214 214 221M270 221Q289 214 309 226" fill="none" stroke="#fff9e9" stroke-width="14" stroke-linecap="round"/>
+<path d="M181 250Q193 236 207 249M277 249Q291 236 304 250" fill="none" stroke="#66493e" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="179" cy="280" rx="22" ry="13" fill="#e99b83" opacity=".7"/><ellipse cx="308" cy="280" rx="22" ry="13" fill="#e99b83" opacity=".7"/>
+<g fill="none" stroke="#ba8b51" stroke-width="3"><ellipse cx="194" cy="258" rx="28" ry="23"/><ellipse cx="290" cy="258" rx="28" ry="23"/><path d="M222 254Q242 245 262 254"/></g>
+<path d="M229 265Q223 292 244 292Q267 290 255 266" fill="#eda581"/><path id="mouth" d="M222 307Q244 338 266 307Q244 318 222 307" fill="#a64f45"/>
+<path d="M241 293Q218 278 195 297L180 311Q213 327 241 302Q271 327 307 311L290 297Q267 278 241 293" fill="#fffbed"/>
+<path d="M164 315Q167 368 199 389Q207 422 243 441Q282 420 288 390Q321 368 323 315Q298 344 279 335Q244 353 207 335Q187 344 164 315" fill="#fffbed"/>
+<path d="M198 358Q200 387 216 397M241 367V414M282 357Q281 382 267 395" fill="none" stroke="#eddcbe" stroke-width="4" stroke-linecap="round"/>
+<!-- A rounded, storybook bishop's mitre. -->
+<path d="M151 207L158 126Q188 69 240 20Q295 60 329 126L337 207Q244 183 151 207Z" fill="#ca5549" stroke="#a74c42" stroke-width="5" stroke-linejoin="round"/>
+<path d="M164 194Q244 174 324 194M241 45V179M195 120H286" fill="none" stroke="#f4cc7d" stroke-width="14" stroke-linejoin="round"/>
+<path d="M176 130Q197 87 222 65" stroke="#e28266" stroke-width="7" fill="none" stroke-linecap="round"/>
+</svg>
