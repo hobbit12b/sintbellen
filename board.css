@@ -10,3 +10,22 @@ body.board-mode{--ink:#65483d;--muted:#917564;--red:#bd5549;background:#fff6e6;f
 @media(min-width:1700px){.board-mode .scene{max-width:1500px}.board-mode .board-footer{max-width:1500px}}
 @media(max-width:700px){.board-mode header{padding:10px 4%}.board-mode .brand{font-size:16px}.board-mode .board-top{margin-top:12px;margin-bottom:14px;padding:0 35px}.board-mode .board-top h2{font-size:19px}.board-mode .scene{width:100%;min-height:0;border-width:3px;border-radius:20px}.board-mode .bubble{border-width:2px}.board-mode .bubble:after{width:12px;height:10px;bottom:-8px;border-width:1px;box-shadow:-10px 12px 0 -3px #fffdf0}.board-mode .scene-caption{padding:3px 10px;border-width:1px}.board-mode .board-footer{width:100%;flex-direction:column;gap:16px;margin-top:18px}.board-mode .board-controls{justify-content:center}.board-mode .setup{margin-top:23px}.board-mode .telephone.ringing:before,.board-mode .telephone.ringing:after{font-size:20px}}
 @media(prefers-reduced-motion:reduce){.board-mode *{animation:none!important;transition:none!important}}
+
+/* Generated, aligned picture-book frames: idle -> picking up -> holding. */
+.board-mode .scene{aspect-ratio:1672/941;border-radius:25px;background:#b96b38}
+.board-mode .room-art{display:none}
+.board-mode .sint{inset:0;width:100%;height:100%;filter:none;z-index:1}
+.painted-frame{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.answered-frame{opacity:0;transition:opacity .6s ease-in-out}
+.holding-receiver .answered-frame{opacity:1}
+.board-mode .bubble{z-index:4;left:60%;top:9%;width:22%;height:29%;border-color:#d7a861;background:#fffbedf5;color:#a84431;box-shadow:0 6px 0 #9d693c33;font-size:11cqw;transform:rotate(1deg)}
+.board-mode .bubble.words{font-size:2.5cqw}
+.board-mode .bubble:after{left:0;box-shadow:-24px 27px 0 -5px #fffbed;border-color:#d7a861;background:#fffbed}
+.board-mode .telephone{left:3.5%;top:52%;right:auto;bottom:auto;width:15%;height:28%;pointer-events:none;z-index:3}
+.board-mode .telephone svg{display:none}
+.board-mode .telephone.ringing{animation:none}
+.board-mode .telephone.ringing:before,.board-mode .telephone.ringing:after{content:'))';font-family:Arial,sans-serif;font-size:4cqw;line-height:1;color:#fff6b0;text-shadow:0 2px 4px #8f4d1d;left:-5%;top:15%;transform:rotate(180deg);animation:bell-lines .45s ease-in-out infinite alternate}
+.board-mode .telephone.ringing:after{left:auto;right:-5%;top:15%;transform:none}
+.board-mode .scene-caption{z-index:4;background:#fff6e5f5;bottom:2.3%;box-shadow:0 3px 8px #834c2a44}
+@keyframes bell-lines{to{opacity:.35;translate:3px 0}}
+@media(prefers-reduced-motion:reduce){.answered-frame{transition:none}.board-mode .telephone.ringing:before,.board-mode .telephone.ringing:after{animation:none}}

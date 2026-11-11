@@ -1,8 +1,10 @@
 const html = /*HTML*/ "";
+const images = /*IMAGES*/ {};
 const ttl=3*60*60*1000;
 const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 export default {async fetch(request,env){
  const url=new URL(request.url);
+ if(images[url.pathname])return new Response(Uint8Array.from(atob(images[url.pathname]),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/jpeg','Cache-Control':'public, max-age=31536000, immutable'}});
  if(!url.pathname.startsWith('/api/'))return new Response(html,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache','Permissions-Policy':'microphone=(self)'}});
  try {
   if(!env.BUCKET)return json({error:'De verbinding is nog niet ingesteld.'},503);
