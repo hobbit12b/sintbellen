@@ -30,7 +30,7 @@ export default {async fetch(request,env){
   if(action==='ask'){
    if(room.phase!=='called')return json({error:'Bel Sinterklaas eerst.'},409);
    if(Date.now()-room.at<4500)return json({error:'Sinterklaas neemt zo op. Wacht nog even.'},409);
-   room.phase='answer';room.number=1+crypto.getRandomValues(new Uint32Array(1))[0]%12;
+   room.phase='answer';room.number=5+crypto.getRandomValues(new Uint32Array(1))[0]%11;
   }else {room.phase=action==='call'?'called':'ready';room.number=null;}
   room.event=crypto.randomUUID();room.at=Date.now();
   await env.BUCKET.put('room/'+room.code,JSON.stringify(room));return json(room);

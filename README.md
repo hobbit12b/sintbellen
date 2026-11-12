@@ -9,7 +9,7 @@ Een klassikaal telspel met een getekende Sinterklaas, een apart digibordscherm e
 3. Open hetzelfde webadres op je mobiel en kies **Ik gebruik mijn mobiel**. Bij een privépublicatie gebruik je hetzelfde account op beide apparaten.
 4. Toets het zescijferige belnummer van het digibord in en druk op **Bel Sinterklaas**. Het is een spelnummer, geen echt telefoonnummer.
 5. Sta de microfoon op je mobiel toe. Na het overgaan neemt Sinterklaas op. Zeg **hoeveel pakjes**. Zo nodig tik je eerst op de microfoonknop.
-6. Sinterklaas denkt even na, toont een willekeurig getal van **1 tot en met 12** in zijn wolkje en spreekt het uit. De kinderen leggen dat aantal blokjes neer.
+6. Sinterklaas denkt even na, toont een willekeurig getal van **5 tot en met 15** in zijn wolkje en spreekt het uit. De kinderen leggen dat aantal blokjes neer.
 7. Kies **Ophangen / nieuwe ronde** om opnieuw te bellen. Op het digibord kun je het getal nog eens laten uitspreken.
 
 Spraakherkenning hangt af van browser, microfoontoestemming en de spraakdienst van het apparaat. De knop **Vraag zonder microfoon** voert dezelfde spelactie uit. Er wordt geen audio door deze applicatie opgeslagen; de browser kan audio voor herkenning naar zijn spraakdienst sturen. De stem komt van de beschikbare Nederlandse systeemstem. Het belnummer is drie uur geldig. Houd het digibord open en gebruik één bedienende telefoon per klas.

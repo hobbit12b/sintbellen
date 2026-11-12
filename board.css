@@ -32,7 +32,7 @@ body.board-mode{--ink:#65483d;--muted:#917564;--red:#bd5549;background:#fff6e6;f
 
 /* Aligned facial layers: the painted base has closed eyes and mouth. */
 .layer{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.eye-layer{mask-image:radial-gradient(ellipse 1.45% 2.4% at 32.05% 32.6%,black 72%,transparent 100%),radial-gradient(ellipse 1.35% 2.3% at 35.7% 31.7%,black 72%,transparent 100%)}
+.eye-layer{mask-image:none;-webkit-mask-image:none;clip-path:inset(29% 62.8% 65.3% 30.4%);visibility:visible;opacity:1}
 .blinking .eye-layer{visibility:hidden}
 .mouth-layer{mask-image:radial-gradient(ellipse 2.05% 2.75% at 34.85% 39.15%,black 72%,transparent 100%);visibility:hidden}
 .speaking .mouth-layer{animation:talk-painted .34s steps(1,end) infinite}
