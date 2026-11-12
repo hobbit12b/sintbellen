@@ -37,7 +37,7 @@ test('Mond volgt spraak; na opdracht ophangen met getal behouden; oude callbacks
  const code=html.slice(html.indexOf('let speechSerial='),html.indexOf('function ring()'));
  const nodes=new Map();const get=id=>{if(!nodes.has(id)){const classes=new Set();nodes.set(id,{classes,classList:{add:n=>classes.add(n),remove:n=>classes.delete(n),toggle(n,on){on?classes.add(n):classes.delete(n);}},querySelector(){return {setAttribute(){}};}});}return nodes.get(id);};
  const synth={getVoices:()=>[],cancel(){this.speaking=false;},speaking:false,paused:false,pending:false,speak(u){this.utterance=u;}};
- const ctx=vm.createContext({$:get,room:{event:'answer-6',phase:'answer',number:6},window:{speechSynthesis:synth},speechSynthesis:synth,SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},setInterval:()=>1,clearInterval(){},status(){},Date});
+ const ctx=vm.createContext({$:get,room:{event:'answer-6',phase:'answer',number:6},rememberRoom(){},window:{speechSynthesis:synth},speechSynthesis:synth,SpeechSynthesisUtterance:class{constructor(text){this.text=text;}},setInterval:()=>1,clearInterval(){},status(){},Date});
  vm.runInContext(code+";setReceiver(true);speak('Leg zes blokjes neer.',()=>finishAnswer('answer-6'));",ctx);
  assert.equal(get('sint').classes.has('speaking'),false);
  synth.speaking=true;synth.utterance.onstart();assert.equal(get('sint').classes.has('speaking'),true);
@@ -46,4 +46,21 @@ test('Mond volgt spraak; na opdracht ophangen met getal behouden; oude callbacks
  synth.speaking=false;synth.utterance.onend();assert.equal(get('sint').classes.has('speaking'),false);assert.equal(get('sint').classes.has('holding-receiver'),false);assert.equal(ctx.room.number,6);
  const old=synth.utterance;ctx.room={event:'new-call',phase:'called'};vm.runInContext("setReceiver(true);speak('Hallo');",ctx);old.onend();assert.equal(get('sint').classes.has('holding-receiver'),true);
  synth.utterance.onstart();vm.runInContext('stopSpeech()',ctx);assert.equal(get('sint').classes.has('speaking'),false);
+});
+test('Bewaard belnummer overleeft herladen; verlopen of beschadigde opslag wordt genegeerd',()=>{
+ const html=readFileSync('index.html','utf8');const code=html.slice(html.indexOf('const savedKey='),html.indexOf('function connectionError'));
+ const data=new Map();const localStorage={getItem:k=>data.get(k),setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};
+ const base={view:'board',localStorage,Date,room:{code:'654321',created:Date.now()},hungUpEvent:'heard'};
+ const a=vm.createContext(base);vm.runInContext(code+';rememberRoom()',a);
+ const b=vm.createContext({...base,room:null});vm.runInContext(code,b);assert.equal(vm.runInContext('readSavedRoom().code',b),'654321');assert.equal(vm.runInContext('readSavedRoom().heardEvent',b),'heard');
+ data.set('pakjestelefoon-board',JSON.stringify({code:'654321',created:Date.now()-4*60*60*1000}));assert.equal(vm.runInContext('readSavedRoom()',b),null);
+ data.set('pakjestelefoon-board','broken');assert.equal(vm.runInContext('readSavedRoom()',b),null);
+});
+test('Afmelding, netwerkstoring en verlopen belnummer krijgen verschillende fouten',async()=>{
+ const html=readFileSync('index.html','utf8');const code=html.slice(html.indexOf('async function api('),html.indexOf('let speechSerial='));
+ let response;const ctx=vm.createContext({AbortController,setTimeout,clearTimeout,fetch:async()=>{if(response instanceof Error)throw response;return response;}});vm.runInContext(code,ctx);
+ response={status:200,redirected:true,headers:{get:()=> 'text/html'}};await assert.rejects(vm.runInContext("api('/654321')",ctx),e=>e.kind==='auth');
+ response=new Error('offline');await assert.rejects(vm.runInContext("api('/654321')",ctx),e=>!e.kind&&e.message.includes('verbinding'));
+ response={status:410,ok:false,headers:{get:()=> 'application/json'},json:async()=>({error:'Belnumer verlopen'})};await assert.rejects(vm.runInContext("api('/654321')",ctx),e=>e.status===410);
+ response={status:200,ok:true,headers:{get:()=> 'application/json'},json:async()=>({code:'654321'})};assert.equal((await vm.runInContext("api('/654321')",ctx)).code,'654321');
 });
